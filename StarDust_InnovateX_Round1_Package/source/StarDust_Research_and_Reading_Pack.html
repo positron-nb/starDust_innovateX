@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>StarDust</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="doc.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">StarDust</h1>
+</header>
+<h1 id="stardust-research-and-reading-pack">StarDust: research and
+reading pack</h1>
+<p>Key: <strong>[Published]</strong> = external source ·
+<strong>[Design]</strong> = our proposal ·
+<strong>[Illustrative]</strong> = example only.</p>
+<h2 id="competition-requirements-verified-from-the-supplied-brief">1.
+Competition requirements (verified from the supplied brief)</h2>
+<ul>
+<li><strong>Theme 3:</strong> monitor, intercept and reduce plastic
+leakage into Mumbai’s coastal and urban drainage networks, addressing a
+specific source.</li>
+<li><strong>Round 1:</strong> a physical concept pitch at the regional
+zonal centre covering team information, problem statement, background
+and existing solutions, proposed solution, and impact and scalability.
+Each team gets <strong>10 minutes</strong>. The top five per zonal
+centre qualify.</li>
+<li><strong>Team size:</strong> up to 4 members.</li>
+<li><strong>Final report:</strong> due <strong>1 December 2026</strong>.
+Finals are 15–18 December 2026 at IIT Bombay.</li>
+<li><strong>Evaluation criteria</strong> (no weights published):
+creativity and novelty; functionality and usability; cost and market
+value; technical feasibility; regional scalability; environmental and
+socioeconomic impact; design and ergonomics; and a bonus for a
+problem-centric approach.</li>
+</ul>
+<p><strong>Inconsistency to resolve:</strong> the brief says both “You
+do not need to make any submissions for Round 1” and “Participants must
+submit their Abstract Submission … on the website”. The team leader must
+check the portal’s Doubt section.</p>
+<p><strong>Website check:</strong>
+<code>techfest.org/competitions/innovatex</code> is rendered by
+JavaScript, and our fetch returned only the page title, so we could not
+verify the brief against the live page. No word limit, date or format
+has been verified, and none is invented in this pack.</p>
+<h2 id="local-context-published">2. Local context [Published]</h2>
+<ul>
+<li><strong>Plastic volume:</strong> the brief quotes a survey estimate
+of ~5,000 t/yr of plastic flowing from Mumbai’s waterways and nullahs to
+the Arabian Sea. The primary survey is not cited.</li>
+<li><strong>BMC contract:</strong> the BMC approved a ₹14.5 crore,
+2-year O&amp;M contract for trash booms on six rivers and nullahs near
+the mangrove belts of the western suburbs. The booms were commissioned
+in July 2022 after NGT directions. The article gives no site list and
+does not mention Malad. (Free Press Journal, 30 Jul 2026.)</li>
+<li><strong>Site counts vary:</strong> other reports differ, ranging
+from 21 outfalls (Outlook) to 8 listed locations (Hindustan Times 2022,
+incl. Mogra, Oshiwara, Poisar, Dahisar, Vakola and Mithi at BKC). Do not
+quote a single count.</li>
+<li><strong>Effectiveness is contested:</strong> environmentalists
+question cost and effectiveness (Citizen Matters).</li>
+</ul>
+<h2 id="existing-approaches-published">3. Existing approaches
+[Published]</h2>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Approach</th>
+<th>Source</th>
+<th>Takeaway</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Single or differential level, plus camera, for trash screens</td>
+<td>Aquasition 2019</td>
+<td>Differential level monitoring with SMS alarms already exists.
+Planned cleaning is described as “often misdirected”.</td>
+</tr>
+<tr class="even">
+<td>Differential pressure across a traveling screen</td>
+<td>AMETEK application note</td>
+<td>Two transmitters at equal height; a set-point triggers an alarm or
+automatic cleaning.</td>
+</tr>
+<tr class="odd">
+<td>Trash-boom tank tests</td>
+<td>IPT towing basin (IAHR library)</td>
+<td>Line tension depends on flow velocity and debris accumulation.</td>
+</tr>
+<tr class="even">
+<td>Trash-net tension models</td>
+<td>Fluids 2022; Ocean Engineering 2022 (abstract only)</td>
+<td>Tension rises with net width and solidity.</td>
+</tr>
+<tr class="odd">
+<td>Field boom tension</td>
+<td>KRISO (Korean, 2002)</td>
+<td>Tension was measured under fast currents.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="technical-principles-design">4. Technical principles
+[Design]</h2>
+<ul>
+<li><strong>Water level:</strong> a sensor reads the distance d to the
+water surface. Water elevation is h = z − d, where z is the sensor’s
+elevation surveyed to a common datum. The level difference across the
+barrier is Δh = hA − hB.</li>
+<li><strong>Level uncertainty:</strong> a first estimate of the combined
+uncertainty is √(uA² + uB²), assuming independent errors. Mounting bias
+needs a separate check.</li>
+<li><strong>Tension:</strong> T = k × (raw − offset), in newtons,
+calibrated through the real fixture. The HX711 is a 24-bit bridge ADC
+with a 2-wire DOUT/SCK interface.</li>
+<li><strong>Why combine signals:</strong> each signal has its own
+confounder. Level is affected by tide, rain and backwater. Tension is
+affected by flow speed and anchor geometry. Combining them may separate
+debris from those causes, and the test checks whether it does.</li>
+<li><strong>System states:</strong> NORMAL, WATCH, INSPECTION REQUEST,
+UNCERTAIN and FAULT. Valid single-channel limit warnings are always
+independent of the combined logic.</li>
+</ul>
+<h2 id="test-plan-summary">5. Test plan summary</h2>
+<p>See <code>StarDust_Bench_Test_and_Demo_Plan.md</code>. The matrix is
+3 debris states × 2 flows × 2 downstream conditions × 5 repeats = 60
+held-out runs. Metrics are FPR, miss rate, detection delay,
+uncertain-output rate and valid-data fraction.</p>
+<h2 id="cost-assumptions">6. Cost assumptions</h2>
+<p>The bench budget is ₹8,650 + 15% reserve = ₹9,947.50, rounded to
+₹9,950. These are planning allowances, not quotes. Field costs are
+excluded.</p>
+<h2 id="limitations">7. Limitations</h2>
+<ul>
+<li>Tide and backwater make interpretation ambiguous.</li>
+<li>On a shallow boom, Δh may be too small to measure.</li>
+<li>Tension cannot give plastic weight.</li>
+<li>One line cannot certify the structure.</li>
+<li>The bench rig does not represent monsoon conditions.</li>
+<li>No crew means no impact.</li>
+<li>No measured results exist yet.</li>
+</ul>
+<h2 id="design-reference-audit-presentation-research">8. Design
+reference audit (presentation research)</h2>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Source</th>
+<th>What it does well</th>
+<th>Adapted for StarDust</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>gitbrent/PptxGenJS demos (github.com/gitbrent/PptxGenJS, MIT)</td>
+<td>Editable native shapes and tables; slide masters for
+consistency</td>
+<td>All diagrams are native, editable shapes. A master carries the
+footer and slide number.</td>
+</tr>
+<tr class="even">
+<td>Aquasition monitoring page</td>
+<td>Explains a problem by contrasting “clear screen vs blocked
+screen”</td>
+<td>A pathway diagram with one highlighted failure point (slide 2)</td>
+</tr>
+<tr class="odd">
+<td>AMETEK app note</td>
+<td>One simple schematic: two sensors, one difference, one action</td>
+<td>Side view with an explicit Δh and datum (slide 4)</td>
+</tr>
+<tr class="even">
+<td>SIH-style engineering decks (team’s own reference)</td>
+<td>Light canvas, navy headings, coloured technical blocks</td>
+<td>Kept: light canvas, navy and teal, orange reserved for risk and
+action</td>
+</tr>
+<tr class="odd">
+<td>Scientific-poster practice</td>
+<td>Assertion-style titles that make each title the message</td>
+<td>Every slide title is a full claim sentence</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Limits on this research:</strong> we could not inspect SIH
+finalist decks directly because public copies are scattered and usually
+unlicensed. No third-party slide content or images were copied.</p>
+<h2 id="glossary">9. Glossary</h2>
+<ul>
+<li><strong>Boom:</strong> a floating barrier.</li>
+<li><strong>Mooring:</strong> the lines and anchors that hold the boom
+in place.</li>
+<li><strong>Retrofit:</strong> an add-on fitted to existing
+infrastructure.</li>
+<li><strong>Datum:</strong> a common height reference.</li>
+<li><strong>Δh:</strong> the head (water-level) difference across the
+barrier.</li>
+<li><strong>HX711:</strong> a load-cell ADC.</li>
+<li><strong>Persistence window:</strong> the time a change must last
+before it counts.</li>
+<li><strong>Held-out runs:</strong> test runs not used for tuning.</li>
+<li><strong>FPR:</strong> false-positive rate.</li>
+<li><strong>Backwater:</strong> downstream water level raised by tide or
+obstruction.</li>
+</ul>
+<h2 id="references">10. References</h2>
+<ol type="1">
+<li>InnovateX 2026-27 brief (supplied PDF);
+https://techfest.org/competitions/innovatex</li>
+<li>Aquasition, Trash screen monitoring systems (2019):
+https://www.aquasition.co.uk/2019/11/10/trash-screen-monitoring-systems/</li>
+<li>AMETEK, Differential measurement – traveling screen:
+https://www.ametekusg.com/learningzone/application-notes/differential-measurement-traveling-screen</li>
+<li>Ocean Engineering (2022), trash-net mooring (abstract; full text
+returned HTTP 403):
+https://www.sciencedirect.com/science/article/abs/pii/S002980182202827X</li>
+<li>IAHR library, IPT trash-boom towing tests:
+https://www.iahr.org/library/info?pid=21351</li>
+<li>Fluids (2022), trash-blocking net model:
+https://doaj.org/article/94350f750211417eae0115e5f3502121</li>
+<li>KRISO boom tension field trial:
+https://www.kriso.re.kr/sciwatch/handle/2021.sw.kriso/1904</li>
+<li>Free Press Journal, BMC ₹14.5-crore trash boom contract (30 Jul
+2026):
+https://www.freepressjournal.in/mumbai/mumbai-bmc-approves-145-crore-contract-to-maintain-trash-boom-systems-across-6-rivers-and-nullahs</li>
+<li>Outlook India, Mumbai beach waste:
+https://www.outlookindia.com/national/the-sea-is-returning-mumbais-garbage-how-2500-tonnes-of-waste-washed-up-on-the-citys-beaches</li>
+<li>Citizen Matters, Mithi clean-up:
+https://citizenmatters.in/how-mumbai-most-polluted-river-is-being-cleaned-up/</li>
+<li>JSN-SR04T datasheet:
+https://robu.in/wp-content/uploads/2019/10/JSN-SR04T-2.0.pdf</li>
+<li>HX711 datasheet:
+https://robu.in/wp-content/uploads/2024/04/R101046-HX711.pdf</li>
+</ol>
+</body>
+</html>

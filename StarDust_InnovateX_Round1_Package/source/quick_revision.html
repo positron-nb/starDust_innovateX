@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>StarDust</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="doc.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">StarDust</h1>
+</header>
+<h1 id="stardust-one-page-quick-revision">StarDust — One-Page Quick
+Revision</h1>
+<p><strong>One line:</strong> Monitoring retrofit for <em>existing</em>
+drain trash booms: Δh across the boom + one mooring-line tension → ESP32
+validity checks + baseline → NORMAL / WATCH / INSPECTION REQUEST /
+UNCERTAIN / FAULT → human crew.</p>
+<p><strong>Problem:</strong> Booms intercept nullah plastic (≈5,000 t/yr
+estimate in brief; BMC ₹14.5 cr 2-yr O&amp;M contract, FPJ 30 Jul 2026).
+Condition between scheduled visits is unknown.</p>
+<p><strong>Contribution (not the sensors):</strong> site-calibrated
+combined decision logic with explicit fault/uncertainty, <em>tested</em>
+against level-only and tension-only.</p>
+<p><strong>Maths:</strong> h = z − d · Δh = hA − hB · T = k(raw −
+offset) [N] · uncertainty ≈ √(uA²+uB²)</p>
+<p><strong>Logic:</strong> valid? → in tested regime? → baseline +
+persistence. Independent valid high-water/high-load warnings never
+suppressed.</p>
+<p><strong>Test:</strong> rig A clean · B debris · C flow change · D
+backwater · E fault+recovery. 60 held-out runs. FPR, miss rate, delay,
+uncertain rate, valid-data fraction. Gates: measurable → beats simpler →
+fault-safe.</p>
+<p><strong>Cost:</strong> ₹8,650 + 15% = ₹9,947.50 ≈
+<strong>₹9,950</strong> bench planning estimate. Not field price.</p>
+<p><strong>Never say:</strong> results · accuracy · prevents floods ·
+world-first · BMC partner · measures plastic weight · site
+confirmed.</p>
+<p><strong>Hardest Qs:</strong> What’s new? · Debris vs flow? · Where
+are results? · What if combined doesn’t help? (→ use simpler; still
+useful) · Why pay vs manual? (multi-site owner, unverified) · Site
+confirmed? (no, Malad candidate) · Flood prevention? (no) ·
+Environmental attribution? (independent weighing vs baseline)</p>
+<p><strong>Limitations:</strong> tide/backwater · small Δh on shallow
+booms · one line ≠ structure · bench ≠ monsoon · needs a crew.</p>
+</body>
+</html>
